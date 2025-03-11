@@ -23,14 +23,14 @@
 
 - name: Download repo key
   ansible.builtin.shell:
-    cmd: "curl -sSL 'https://www.mongodb.org/static/pgp/server-{{ mongodb_server_version }}.asc' | gpg --dearmor --output {{ mongodb_keyring }}"
+    cmd: "curl -fsSL 'https://www.mongodb.org/static/pgp/server-{{ mongodb_server_version }}.asc' | gpg --dearmor --output {{ mongodb_keyring }} --batch --yes"
     creates: "{{ mongodb_keyring }}"
   tags:
     - mongodb
 
 - name: Add apt repository
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by={{ mongodb_keyring }}] http://repo.mongodb.org/apt/ubuntu {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_server_version }} multiverse"
+    repo: "deb [signed-by={{ mongodb_keyring }}] http://repo.mongodb.org/apt/debian {{ ansible_distribution_release }}/mongodb-org/{{ mongodb_server_version }} main"
     filename: mongodb
     update_cache: True
     state: present
